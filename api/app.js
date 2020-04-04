@@ -6,8 +6,9 @@ const mongoose = require('mongoose')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const expressValidator = require('express-validator')
 //import routes
-const userRoutes = require('./routes/user')
+const authRoutes = require('./routes/auth')
 
 const app = express()
 
@@ -27,8 +28,9 @@ mongoose.connect(process.env.MONGODB_URI,{
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cookieParser())
+app.use(expressValidator())
 //-------МАРШРУТИ------------//Route Middleware
-app.use('/api',userRoutes)
+app.use('/api',authRoutes)
 
 //---------------------------
 

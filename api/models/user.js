@@ -11,10 +11,11 @@ const userSchema = new mongoose.Schema({
         maxLength :32
     },
     email :{
-        type: String,
+        type: String,      
         trim: true,
         required : true,
-        maxLength :32
+        unique : 32
+        
     },
     hashed_password :{
         type: String,
@@ -59,6 +60,9 @@ userSchema.methods.encryptPassword = function(password){
             return ''
         }
     
+}
+userSchema.methods.authenticate = function(plainText){
+    return this.encryptPassword(plainText) === this.hashed_password
 }
 
 module.exports = mongoose.model('User',userSchema)

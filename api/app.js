@@ -3,8 +3,10 @@ const express = require ('express')
 //mogoDB
 const mongoose = require('mongoose')
 
+const morgan = require('morgan')
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 //import routes
-
 const userRoutes = require('./routes/user')
 
 const app = express()
@@ -21,7 +23,10 @@ mongoose.connect(process.env.MONGODB_URI,{
 }).then(()=>{
     console.log(`He-he ....\nDB connected`)
 })
-
+//middleware
+app.use(morgan('dev'))
+app.use(bodyParser.json())
+app.use(cookieParser())
 //-------МАРШРУТИ------------//Route Middleware
 app.use('/api',userRoutes)
 

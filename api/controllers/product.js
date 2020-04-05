@@ -43,7 +43,7 @@ exports.create = (req,res)=>{
                     err : errorHandler(err)
                 })
             }
-            res.json(result)
+            res.json({'msg' : 'Успішно добавленно'})
         })
     })
 
@@ -122,4 +122,32 @@ exports.update =(req,res)=>{
             res.json({result,"msg":"Продукт успішно оновлено"})
         })
     })
+}
+
+//сортування товарів по продажам і по поступленні
+//сортую по продажам по спаданню з лімітом видачі 10
+//* /products?sortBy=sold&order=desc&limit=10
+//сортую по поступленню 
+//* /products?sortBY=createdAt&order=desc&limit=10
+//якщо не буде параметрів повертає всі продукти
+exports.list= (req,res)=>{
+    let order = req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    let limit = req.query.limit ? parseInt(req.query.limit) : 10
+
+    // .select("-photo") не буде грузити фото з бд щоб не тормозити сайт
+    Product.find()
+        .select("-photo")
+        .populate('category')
+        .sort([[sortBy,order]])
+        .limit(limit)
+        .exec((err,products)=>{
+            if(err){
+                return res.status(400).json({
+                    'msg' : 'Не знайдено продуктів'
+                })
+            }
+            res.send(products)
+        })
+
 }

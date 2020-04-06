@@ -147,7 +147,87 @@ exports.list= (req,res)=>{
                     'msg' : 'Не знайдено продуктів'
                 })
             }
-            res.send(products)
+            res.json(products)
         })
 
+}
+// знаходить продукти в категоріїї ???
+
+exports.listRelated = (req,res)=>{
+    let limit = req.query.limit ? parseInt(req.query.limit) : 10
+
+    Product.find({_id:{$ne: req.product},category: req.product.category})
+    .limit(limit)
+    .populate('categoty','_id  name')
+    .exec((err,products)=>{
+        if(err){
+            return res.status(400).json({
+                'msg' : 'Не знайдено продуктів'
+            })
+        }
+        res.json(products)
+    })
+
+}
+exports.listCategories = (req,res)=>{
+    Product.distinct('category',{},(err,categories)=>{
+        if(err){
+            return res.status(400).json({
+                'msg' : 'Не знайдено продуктів'
+            })
+        }
+        res.json(categories)
+    })
+}
+
+//пошук товарів 
+// на фронті будуть чекбокси слайдер з ціною і радіобатони
+// кароч фільтрація
+exports.listBySearch =(req,res) =>{
+    let order = req.body.order ? req.body.order : 'desc'
+    let sortBy = req.body.sortBy ? req.body.sortBy : '_id'
+    let limit = req.body.limit ? parseInt(req.body.limit) : 100
+    let skip = parseInt(req.body.skip)
+    let findArgs ={}
+
+    for(let key in req.body.filters){
+        if (req.body.filters[key].length > 0) {
+            if(key === 'price'){
+                findArgs[key] ={
+                    //gte greater than- більше ніж ціна
+                    //lte less than менше ніж ціня
+                    // пошук в ціновій категорії нприклад між 132 - 1000 грн
+                    $gte: req.body.filters[key][0],
+                    $lte: req.body.filters[key][1]
+                }
+            }else{
+                findArgs[key]= req.body.filters[key]
+            }
+        }
+    }
+    Product.find(findArgs)
+    .select('-photo')
+    .populate('category')
+    .sort([[sortBy,order]])
+    .skip(skip)
+    .limit(limit)
+    .exec((err,data)=>{
+        if(err){
+            //send zamist json
+            return res.status(400).json({
+                err : "Товари не знайдено"
+            })
+        }
+        res.json({
+            size:data.length,
+            data
+        })
+    })
+}
+exports.photo =(req,res,next)=>{
+    if (req.product.photo.data) {
+        res.set('Content-Type',req.product.photo.contentType)
+        return res.send(req.product.photo.data)
+    }
+    next();
 }

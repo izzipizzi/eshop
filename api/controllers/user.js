@@ -12,3 +12,37 @@ exports.userById =(req,res,next,id)=>{
         next()
     })
 }
+exports.update = (req,res)=>{
+    User.findByIdAndUpdate({
+        _id:req.profile._id
+    },
+    {
+        $set: req.body
+    },
+    {
+        new: true
+    },
+        (err,user)=>{
+            if (err) {
+                return res.status(400).json({
+                    err: 'Ви не авторизовані для такої дії'
+                })
+                
+            }
+
+        user.hashed_password = undefined
+        user.salt = undefined
+        res.json(user)
+
+        }
+    
+    )
+}
+
+exports.read = (req,res)=>{
+    //не передаю на фронт хеш пароль і сіль
+    req.profile.hashed_password = undefined
+    req.profile.salt = undefined
+    return res.json(req.profile)
+
+}

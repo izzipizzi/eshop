@@ -15,7 +15,7 @@ exports.userSignUpValidator=(req,res,next)=>{
         min : 6,
         max : 32
     })
-    .withMessage('Пароль повинний бути довжиною як мінімум 6 символів')
+    .withMessage('Пароль повинний бути довжиною як мінімум 6 символів максимум 32')
     .matches(/\d/)
     .withMessage('Пароль має містити як мінімум 1 цифру');
 

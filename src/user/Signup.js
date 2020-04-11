@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, Component, Fragment } from 'react'
 import {Link} from 'react-router-dom'
 
 import {signup} from '../auth/index'
+import {showError,showSucces} from '../components/alerts'
+
 import Layout from '../core/Layout'
 
 
@@ -85,21 +87,23 @@ const Signup = ()=>{
             </form>
         )       
     }
-
-    const showError =()=>(
-        <div className ='alert alert-danger'style={
-            {display: error ? '' : 'none'}
-        }>
-            {error}
-        </div>
-    )
-    const showSucces =()=>(
-        <div className ='alert alert-success'style={
-            {display: success ? '' : 'none'}
-        }>
-            Створено новий акаунт Будь-ласка <Link to='/signin'>увійдіть</Link> 
-        </div>
-    )
+    const redirectSignin = () =>{
+      return <Fragment> Створено новий акаунт Будь-ласка <Link to='/signin'>увійдіть</Link> </Fragment> 
+    }
+    // const showError =()=>(
+    //     <div className ='alert alert-danger'style={
+    //         {display: error ? '' : 'none'}
+    //     }>
+    //         {error}
+    //     </div>
+    // )
+    // const showSucces =()=>(
+    //     <div className ='alert alert-success'style={
+    //         {display: success ? '' : 'none'}
+    //     }>
+    //         Створено новий акаунт Будь-ласка <Link to='/signin'>увійдіть</Link> 
+    //     </div>
+    // )
 
     return(
         <Layout 
@@ -107,8 +111,8 @@ const Signup = ()=>{
             description =" Sign up to Kursova eshopee"
             clasName = 'container col-md-8 offset-md-2'
         >
-        {showSucces()}
-        {showError()}
+        {showSucces(success,redirectSignin())}
+        {showError(error)}
         {signUpForm()}
         </Layout>
     )

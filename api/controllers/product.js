@@ -7,19 +7,20 @@ const {errorHandler} = require('../helpers/dbErrorHandler')
 exports.create = (req,res)=>{
     let form = new formidable.IncomingForm()
 
+
     form.keepExtensions = true
 
     form.parse(req,(err,fields,files)=>{
         if(err){
             return res.status(400).json({
-                err: 'Ця картинка не може бути загружена'
+                error: 'Ця картинка не може бути загружена'
             })
         }
         // check fields
         const{name,description,price,category,quantity,shipping} = fields
         if(!name || !description || !price || !category ||! quantity ||! shipping){
             return res.status(400).json({
-                err: 'Всі поля мають бути заповнені'
+                error: 'Всі поля мають бути заповнені'
             })
         }
 
@@ -29,7 +30,7 @@ exports.create = (req,res)=>{
         if(files.photo){
             if (files.photo.size > 1000000) {
                 return res.status(400).json({
-                    err: 'Максимальний розмір картинки 1 мегабайт.'
+                    error: 'Максимальний розмір картинки 1 мегабайт.'
                 })
                 
             }
@@ -40,7 +41,7 @@ exports.create = (req,res)=>{
         product.save((err,result)=>{
             if (err) {
                 return res.status(400).json({
-                    err : errorHandler(err)
+                    error : err.message
                 })
             }
             res.json({'msg' : 'Успішно добавленно'})
@@ -52,7 +53,7 @@ exports.productById =(req,res,next,id)=>{
     Product.findById(id).exec((err,product)=>{
         if (err || !product) {
             return res.status(400).json({
-                err : "Товар  не знайдено"
+                error : "Товар  не знайдено"
             })
         }
         req.product = product
@@ -71,7 +72,7 @@ exports.remove = (req,res)=>{
     product.remove((err,deletedProduct)=>{
         if (err) {
             return res.status(400).json({
-                err : errorHandler(err)
+                error : errorHandler(err)
             })
         }
         res.json({
@@ -87,14 +88,14 @@ exports.update =(req,res)=>{
     form.parse(req,(err,fields,files)=>{
         if(err){
             return res.status(400).json({
-                err: 'Ця картинка не може бути загружена'
+                error: 'Ця картинка не може бути загружена'
             })
         }
         // check fields
         const{name,description,price,category,quantity,shipping} = fields
         if(!name || !description || !price || !category ||! quantity ||! shipping){
             return res.status(400).json({
-                err: 'Всі поля мають бути заповнені'
+                error: 'Всі поля мають бути заповнені'
             })
         }
 
@@ -105,7 +106,7 @@ exports.update =(req,res)=>{
         if(files.photo){
             if (files.photo.size > 1000000) {
                 return res.status(400).json({
-                    err: 'Максимальний розмір картинки 1 мегабайт.'
+                    error: 'Максимальний розмір картинки 1 мегабайт.'
                 })
                 
             }
@@ -133,7 +134,7 @@ exports.update =(req,res)=>{
 exports.list= (req,res)=>{
     let order = req.query.order ? req.query.order : 'asc'
     let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
-    let limit = req.query.limit ? parseInt(req.query.limit) : 10
+    let limit = req.query.limit ? parseInt(req.query.limit) : 6
 
     // .select("-photo") не буде грузити фото з бд щоб не тормозити сайт
     Product.find()
@@ -215,7 +216,7 @@ exports.listBySearch =(req,res) =>{
         if(err){
             //send zamist json
             return res.status(400).json({
-                err : "Товари не знайдено"
+                error : "Товари не знайдено"
             })
         }
         res.json({

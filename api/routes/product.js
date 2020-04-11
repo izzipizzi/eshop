@@ -7,6 +7,8 @@ const{requireSignin,isAdmin,isAuth} = require('../controllers/auth')
 const{userById} = require('../controllers/user')
 const{productById,read,remove,photo,update,listBySearch,list,listRelated,listCategories} = require('../controllers/product')
 
+const {productFormValidator} = require ('../validator/index')
+
 router.post('/product/create/:userId',requireSignin,isAdmin,isAuth,create) 
 router.get('/product/:productId',read)
 router.get('/products',list)

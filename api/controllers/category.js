@@ -6,10 +6,10 @@ exports.create = (req,res)=>{
     category.save((err,data)=>{
         if(err){
             return res.status(400).json({
-                err : errorHandler(err)
+                err : errorHandler(err) + "Не може бути 2 однакові категорії"
             })
         }
-        res.json({data})
+        res.json({data,msg:'Успішно добавлено категорію'})
     })
 
 }

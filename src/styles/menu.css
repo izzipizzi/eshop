@@ -1,0 +1,107 @@
+.nav-menu{
+    background-color: #ffffff;
+    min-height: 90px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-family:  'Montserrat', sans-serif;
+    border: 1px solid  #e3e8f0;
+               
+}
+
+.nav-menu img{
+    max-height: 30px;
+}
+.nav-menu ul li a{
+    
+    color: #6b7db4;
+    font-weight: 800;
+    font-size: 14px;
+}
+.nav-menu ul li:hover{
+   
+   
+    transform: scale(1.1);
+}
+.nav-menu ul .menu-logo:hover{
+    transform: none;
+}
+.nav-menu ul li a:hover{
+   
+   
+    color: #343e5c;
+}
+    .left-block{
+        display: flex;
+        
+        max-height: 30px;
+        min-width: 435px;
+        width: 435px;
+        align-items: center;
+        border: none;
+    }
+    .left-block img{
+        max-height: 50px;
+    }
+    .center-block{
+       
+        /* padding: 38px 30px 30px 40px; */
+        min-width: 435px;
+        width: 550px;
+        border: none;
+    }
+        .center-block ul{
+            display: flex;
+            /* flex-direction: row; */
+            align-items: center;
+            justify-content: space-evenly;
+        }
+            .center-block ul li{                
+                margin: 15px;              
+               
+            }
+           
+            
+    .right-block{
+        display: flex;
+        min-width: 435px;
+        width: 435px;
+        border: none;
+    }
+        .right-block ul{
+            display: flex;
+            /* flex-direction: row; */
+            align-items: center;
+            justify-content: space-around;
+        }
+            .right-block ul li:first-child{
+                    
+                margin: 0px;
+                border: none;
+                padding: 10px;
+                border-radius: 20px;
+            
+            }
+            .right-block ul li{
+                
+                margin: 15px;
+                border: 2px solid #e3e8f0;
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                /* justify-content: center; */
+                flex-direction: row;
+                border-radius: 20px;
+
+               
+            }
+            .right-block p{
+                text-align: center;
+                font-size: 12px;
+                min-width: 15px;
+                max-height: 20px;
+                padding: 3px;
+                border-radius: 20px;
+                border: 2px solid #6b7db4;
+                background-color: #e3e8f0;
+            }

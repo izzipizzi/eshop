@@ -1,0 +1,39 @@
+.container-form{
+    max-width:600px;
+    margin: 120px auto;
+    
+}
+.container-form h1 {
+    margin: 0 auto;
+    text-align: center;
+    color: #4f5c83;
+}
+.container-form form{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+.form-input{
+   
+    /* width: 500px;
+    max-width: 600px; */
+    
+    /* background-color: aqua; */
+}
+.container-form-item{
+    width: 600px;
+    display: flex;
+    margin: 20px auto;
+    align-items: center;
+    
+}
+.container-form-item input{
+    width: 500px;
+    
+}
+.container-form-item textarea{
+    width: 500px;
+    
+}

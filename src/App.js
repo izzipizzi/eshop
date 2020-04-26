@@ -1,10 +1,14 @@
 import React from 'react';
 
-import './App.css';
+import './style.css'
+
+import Menu from './core/components/Menu'
+
 
 function App() {
   return (
-  
+    <Menu></Menu>
+    
   );
 }
 

@@ -1,0 +1,40 @@
+.slider{
+  
+    
+    background-color: azure;
+}
+.slider-wrapper{
+    background-color: #1c1e23;
+    color: #FFF;
+    max-height: 500px;
+}
+.slider-item{
+    max-width: 1200px;
+    max-height: 500px;
+    margin: 0 auto;
+}
+.product-card{
+    /* max-height: 500px; */
+    max-width: 1200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    padding: 30px;
+
+   
+   
+}
+
+.product-info{
+    flex-basis: 60%;
+    
+}
+.product-img{
+    flex-basis: 40%;
+    min-height: 300px;
+}
+.product-img img{
+    flex-basis: 40%;
+    min-height: 300px;
+}

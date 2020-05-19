@@ -18,6 +18,23 @@ export const createCategory =(userId,token,category)=>{
         console.log(err)
     })
 }
+export const createManufacturer =(userId,token,manufacturer)=>{
+    return fetch(`${API}/manufacturer/create/${userId}`,{
+        method : 'POST',
+        headers:{
+            'Accept' : 'application/json',
+            'Content-Type' : 'application/json',
+            'Authorization' : `Bearer ${token}`
+        },
+        body : JSON.stringify(manufacturer)
+    })
+    .then(response=>{
+        return response.json()
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
 
 
 export const createProduct =(userId,token,product)=>{
@@ -39,6 +56,18 @@ export const createProduct =(userId,token,product)=>{
 }
 export const getCategories =()=>{
     return fetch(`${API}/categories`,{
+        method : 'GET'        
+    })
+    .then(response=>{
+        // console.log(response)
+        return response.json()
+    })
+    .catch(err=>{
+        console.log(err)
+    })
+}
+export const getManufactures =()=>{
+    return fetch(`${API}/manufactures`,{
         method : 'GET'        
     })
     .then(response=>{

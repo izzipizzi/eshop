@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import{BrowserRouter,Switch,Route} from 'react-router-dom'
 
 import Signup from './core/Signup'
@@ -13,9 +13,13 @@ import AdminDashboard from './core/user/AdminDashboard'
 import AdminRoute from './auth/AdminRoutes'
 import AddCategory from './admin/AddCategory'
 import AddProduct from './admin/AddProduct'
+import AddManufacturer from './admin/AddManufacturer'
+
+
 
 
 const Routes =()=>{
+   
     return(
         <div>
             <BrowserRouter>
@@ -28,6 +32,7 @@ const Routes =()=>{
                     <PrivateRoute path ='/user/dashboard' exact component={Dashboard}/>
                     <AdminRoute path ='/admin/dashboard' exact component={AdminDashboard}/>
                     <AdminRoute path ='/сreate/category' exact component={AddCategory}/>
+                    <AdminRoute path ='/сreate/manufacturer' exact component={AddManufacturer}/>
                     <AdminRoute path ='/сreate/product' exact component={AddProduct}/>
                 </Switch>
             </BrowserRouter>

@@ -1,5 +1,6 @@
 import React from 'react'
 import Menu from './components/Menu'
+import Footer from './components/Footer'
 
 
 const Container = ({className,children})=>{
@@ -11,6 +12,8 @@ const Container = ({className,children})=>{
             <div className ={className} >
                 {children}
             </div>
+            <Footer/>
+
         </div>
     )
 }

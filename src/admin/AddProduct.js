@@ -6,7 +6,7 @@ import {isAuth} from '../auth/index'
 import {Link} from 'react-router-dom'
 import {showError, showSucces} from '../core/components/Alerts'
 
-import {createProduct, getCategories,getDeliveries,getCategoriesAndDeliveries} from './apiAdmin'
+import {createProduct, getCategories,getDeliveries,getManufactures,getCategoriesAndDeliveries} from './apiAdmin'
 
 import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -45,9 +45,10 @@ const AddProduct = () => {
     price: '',
     deliveries: [],
     categories: [],
-    
+    manufactures:[],
     category: '',
     shipping: '',
+    manufacturer: '',
     quantity: '',
     photo: '',
     loading: false,
@@ -71,6 +72,7 @@ const AddProduct = () => {
     price,
     categories,
     deliveries,
+    manufactures,
     category,
     shipping,
     quantity,
@@ -97,32 +99,131 @@ const AddProduct = () => {
     } else {
       
       
-      setValues({
-        ...values,
+      // setValues({
+      //   ...values,
       
-        categories: data.categories,
-        deliveries: data.deliveries,
-        formData: new FormData()
-      })
+      //   categories: data.categories,
+      //   deliveries: data.deliveries,
+      //   // formData: new FormData()
+      // })
       
       console.log(categories);
     }
+  }).then((data)=>{
+    // loadManufactures()
+    getManufactures().then(manufacturersData=>{
+      if (manufacturersData.err) {
+        setValues({
+          ...values,
+          error: manufacturersData.err
+        })
+  
+      } else {
+
+        console.log(manufacturersData)
+
+        setValues({
+          ...values,      
+            categories: data.categories,
+        deliveries: data.deliveries,
+          manufactures: manufacturersData.manufactures,
+          formData: new FormData()
+  
+        })
+        
+        console.log(manufactures);
+      }
+    })
   })
 
+  const load = new Promise((resolve,reject)=>{
+    getCategoriesAndDeliveries().then(data=>{
+
+      if (data.err) {
+        setValues({
+          ...values,
+          error: data.err
+        })
+  
+      } else {
+        
+        resolve(data)
+        
+       
+        
+        // console.log(categories);
+      
+      }
+    
+    })
+  })
+  
+  
+  // const loadManufactures = () => getManufactures().then(data=>{
+  //   if (data.err) {
+  //     setValues({
+  //       ...values,
+  //       error: data.err
+  //     })
+
+  //   } else {
+      
+      
+  //     setValues({
+  //       ...values,      
+  //       manufactures: data.manufactures,
+  //       formData: new FormData()
+
+  //     })
+      
+  //     console.log(manufactures);
+  //   }
+  // })
   
 
 
   useEffect(() => {
-   init()
+  //  init()
+  //  loadManufactures()
+  load.then(data=>{
+    getManufactures().then(mData=>{
+     
+      
+      if (data.err) {
+        setValues({
+          ...values,
+          error: data.err
+        })
   
+      } else {
+        
+        setValues({
+          ...values,      
+            categories: data.categories,
+            deliveries: data.deliveries,
+            manufactures: mData.manufactures,
+          formData: new FormData()
+  
+        })
+
+        console.log(data,mData)
+        console.log(manufactures)
+      
+      }
+
+    })
+  })
+
   }, [])
 
   const handleChange = (name) => event => {
     const value = name === 'photo'
-      ? (event.target.files[0], setPhotoLabel(`${event.target.files[0].name}`))
+      ? (event.target.files[0]
+      )
       : event.target.value;
-
+      setPhotoLabel("Вибрано")
     formData.set(name, value)
+    
      console.log(name,value)
     setValues({
       ...values,
@@ -155,19 +256,27 @@ const AddProduct = () => {
         console.log(error)
       } else {
         setValues({
-          ...values,
           name: '',
           description: '',
           price: '',
-          photo: '',
+          deliveries: [],
+          categories: [],
+          manufactures:[],
+          category: '',
           shipping: '',
+          manufacturer: '',
           quantity: '',
+          photo: '',
           loading: false,
-          success: true,
           error: '',
-          successMsg: data.msg,
-          createdProduct: data.name
+          createdProduct: '',
+          redirectToProfile: false,
+          formData: '',
+          success: false,
+          successMsg: data.msg
         })
+        setPhotoLabel('Загрузити фото')
+        
         setState({ open: true,vertical: 'top', horizontal: 'center' } );
 
         console.log(data.msg)
@@ -193,9 +302,11 @@ const AddProduct = () => {
     price: '',
     deliveries: [],
     categories: [],
+    manufactures: [],
     
     category: '',
     shipping: '',
+    manufacturer: '',
     quantity: '',
     photo: '',
     loading: false,
@@ -205,11 +316,12 @@ const AddProduct = () => {
     formData: '',
     success: false,
     successMsg: ''})
+    document.location.reload();
   };
 
   const newPostForm = () => (
     <div className='container-form'>
-        <form  onSubmit={clickSubmit} validate>
+        <form  onSubmit={clickSubmit}>
       <h1 className='block-header'>Добавити товар</h1>
 
       <div className='container-form-item'>
@@ -325,6 +437,23 @@ const AddProduct = () => {
           </MenuItem>
           {categories && categories.map((cat, index) => {
             return <MenuItem value={cat._id} key ={index}>{cat.name}</MenuItem>
+     
+          })}
+        </Select>
+        </div>
+        <div className='container-form-item'>
+        
+        <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+Виберіть виробника
+        </InputLabel>
+          {/*{            console.log(manufactures+'asasf')*/}
+          }
+        <Select id='select' onChange={handleChange('manufacturer')} value={values.manufacturer  || ''}>
+          <MenuItem>
+            Виберіть виробника
+          </MenuItem>
+          {manufactures && manufactures.map((manufacturer, index) => {
+            return <MenuItem value={manufacturer._id} key ={index}>{manufacturer.name}</MenuItem>
      
           })}
         </Select>

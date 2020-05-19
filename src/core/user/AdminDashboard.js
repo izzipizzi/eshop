@@ -30,6 +30,11 @@ const AdminDashboard = ()=>{
                         </Link>
                     </li>
                     <li>
+                        <Link  className ='link' to ='/сreate/manufacturer'>
+                            Добвити виробника
+                        </Link>
+                    </li>
+                    <li>
                         <Link  className ='link' to='/сreate/product'>
                             Створити продукт
                         </Link>
@@ -56,7 +61,7 @@ const AdminDashboard = ()=>{
       className='container'
       >
     
-     <div className='profile-container'>
+            <div className='profile-container'>
               <div className='profile-links'>
               {adminLinks()}
               </div>

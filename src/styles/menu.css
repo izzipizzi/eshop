@@ -6,6 +6,10 @@
     justify-content: center;
     font-family:  'Montserrat', sans-serif;
     border: 1px solid  #e3e8f0;
+    /* z-index: 99999;
+    position: -webkit-sticky; /* Safari 
+    position: sticky;
+    top: 0; */
                
 }
 
@@ -85,7 +89,7 @@
             .right-block ul li{
                 
                 margin: 15px;
-                border: 2px solid #e3e8f0;
+                /* border: 2px solid #e3e8f0; */
                 padding: 10px;
                 display: flex;
                 align-items: center;

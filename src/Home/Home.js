@@ -9,7 +9,7 @@ const Home = ({products,loadProducts}) => {
     // debugger
     useEffect(()=>{
         //включити коли появиться інтернет
-        // loadProducts()
+        loadProducts()
 
     },[])
     let loadProductCards = products.productsList.map(product=>(<ProductCard key ={product._id} product={product}/>))

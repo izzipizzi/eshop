@@ -5,7 +5,16 @@ import {
     userSignUp
 } from "./reducers/user";
 import {API} from "./config";
-import {loadProducts, productsHasError, productsIsLoading} from "./reducers/product";
+import {
+    categoriesHasError,
+    categoriesIsLoading,
+    loadCategories,
+    loadFilteredProducts,
+    loadManufactures,
+    loadProducts, manufacturesHasError, manufacturesIsLoading,
+    productsHasError,
+    productsIsLoading
+} from "./reducers/product";
 
 
 export const loadProductsFromDB = (sortBy = 'sold', limit = 20) => {
@@ -36,6 +45,111 @@ export const loadProductsFromDB = (sortBy = 'sold', limit = 20) => {
             })
             .catch(error => {
                 dispatch(productsHasError(true,error))
+            })
+
+
+    })
+
+}
+export const loadFilteredProductsFromDB = (skip, limit ,filters) => {
+    return ((dispatch) => {
+        const data ={limit,skip,filters}
+        dispatch(productsIsLoading(true))
+        fetch(`${API}/products/by/search`, {
+            method: 'POST', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8"
+            },
+            body: JSON.stringify(data)
+
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                dispatch(productsIsLoading(false))
+                return response
+            })
+            .then(response => response.json())
+            .then(products => {
+                if (products.msg){
+                    dispatch(productsHasError(true,products.msg))
+                }else {
+                    dispatch(loadFilteredProducts(products))
+
+                }
+            })
+            .catch(error => {
+                dispatch(productsHasError(true,error))
+            })
+
+
+    })
+
+}
+export const loadCategoriesFromDB = () => {
+    return ((dispatch) => {
+        dispatch(categoriesIsLoading(true))
+        fetch(`${API}/categories`, {
+            method: 'GET', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                dispatch(categoriesIsLoading(false))
+                return response
+            })
+            .then(response => response.json())
+            .then(categories => {
+                if (categories.msg){
+                    dispatch(categoriesHasError(true,categories.msg))
+                }else {
+                    dispatch(loadCategories(categories))
+
+                }
+            })
+            .catch(error => {
+                dispatch(categoriesHasError(true,error))
+            })
+
+
+    })
+
+}
+export const loadManufacturesFromDB = () => {
+    return ((dispatch) => {
+        dispatch(manufacturesIsLoading(true))
+        fetch(`${API}/manufactures`, {
+            method: 'GET', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                dispatch(manufacturesIsLoading(false))
+                return response
+            })
+            .then(response => response.json())
+            .then(manufactures => {
+                if (manufactures.msg){
+                    dispatch(manufacturesHasError(true,manufactures.msg))
+                }else {
+                    dispatch(loadManufactures(manufactures))
+
+                }
+            })
+            .catch(error => {
+                dispatch(manufacturesHasError(true,error))
             })
 
 

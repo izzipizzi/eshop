@@ -1,7 +1,12 @@
 import Shop from "./Shop";
 import {connect} from "react-redux";
-import {loadProducts} from "../reducers/product";
-import {loadProductsFromDB} from "../apiActions";
+import {handleFilters, handleToggleFilter, loadProducts} from "../reducers/product";
+import {
+    loadCategoriesFromDB,
+    loadFilteredProductsFromDB,
+    loadManufacturesFromDB,
+    loadProductsFromDB
+} from "../apiActions";
 
 
 
@@ -12,7 +17,11 @@ const mapStateToProps =(state)=>{
 }
 const mapDispatchToProps = (dispatch)=>{
     return{
-        loadProducts: (sortBy,limit)=>dispatch(loadProductsFromDB(sortBy,limit))
+        loadProducts: (sortBy,limit)=>dispatch(loadProductsFromDB(sortBy,limit)),
+        loadFilteredProducts: (skip,limit,filters)=>dispatch(loadFilteredProductsFromDB(skip,limit,filters)),
+        loadCategories: ()=>dispatch(loadCategoriesFromDB()),
+        loadManufactures: ()=>dispatch(loadManufacturesFromDB()),
+        handleToggleFilter : (filter,filterBy)=>dispatch(handleToggleFilter(filter,filterBy)),
     }
 }
 

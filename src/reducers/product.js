@@ -1,43 +1,157 @@
 import {combineReducers} from "redux";
+import {loadFilteredProductsFromDB} from "../apiActions";
 
 const LOAD_PRODUCTS = 'LOAD_PRODUCTS';
+const LOAD_FILTERED_PRODUCTS = 'LOAD_FILTERED_PRODUCTS';
+const LOAD_CATEGORIES = 'LOAD_CATEGORIES';
+const LOAD_MANUFACTURES = 'LOAD_MANUFACTURES';
+
 const PRODUCTS_IS_LOADING = "PRODUCTS_IS_LOADING"
 const PRODUCTS_HAS_ERROR = "PRODUCTS_HAS_ERROR"
 
+const MANUFACTURES_IS_LOADING = "MANUFACTURES_IS_LOADING"
+const MANUFACTURES_HAS_ERROR = "MANUFACTURES_HAS_ERROR"
+
+const CATEGORIES_IS_LOADING = "CATEGORIES_IS_LOADING"
+const CATEGORIES_HAS_ERROR = "CATEGORIES_HAS_ERROR"
+
+const HANDLE_TOGGLE_FILTER = "HANDLE_TOGGLE_FILTER"
+const HANDLE_FILTERS = "HANDLE_FILTERS"
+
 
 // const LOAD_PRODUCTS_BY_SOLD = 'LOAD_PRODUCTS_BY_SOLD';
-const productsInitialState ={
-    productsList: [{"sold":0,"_id":"5eba4c35e7e29742c03f3905","name":"Iphone 11 Pro Max 256Gb","description":"Екран (6.5\", OLED (Super Retina XDR), 2688x1242) / Apple A13 Bionic / основна потрійна камера: 12 Мп + 12 Мп + 12 Мп, фронтальна камера: 12 Мп / RAM 4 ГБ / 256 ГБ вбудованої пам'яті / 3G / LTE / GPS / ГЛОНАСС / Nano-SIM / iOS 1","price":40000,"shipping":{"_id":"5ea4453ad661b9569016e017","name":"Justin","createdAt":"2020-04-25T14:12:10.729Z","updatedAt":"2020-04-25T14:12:10.729Z","__v":0},"category":{"_id":"5eba4b7de7e29742c03f38ff","name":"Cмартфони","createdAt":"2020-05-12T07:08:45.463Z","updatedAt":"2020-05-12T07:08:45.463Z","__v":0},"manufacturer":{"_id":"5eb942c29917854d14ec6f04","name":"Apple","createdAt":"2020-05-11T12:19:14.143Z","updatedAt":"2020-05-11T12:19:14.143Z","__v":0},"quantity":100,"createdAt":"2020-05-12T07:11:49.820Z","updatedAt":"2020-05-12T07:11:49.820Z","__v":0},{"sold":0,"_id":"5eba4ca6e7e29742c03f3906","name":"Iphone 7 32Gb","description":"Екран (4.7\", IPS, 1334x750)/ Apple A10 Fusion/ основна камера: 12 Мп, фронтальна камера: 7 Мп/ RAM 2 ГБ/ 32 ГБ вбудованої пам'яті/ 3G/ LTE/ GPS/ Nano-SIM/ iOS 10","price":10500,"shipping":{"_id":"5ea4453ad661b9569016e017","name":"Justin","createdAt":"2020-04-25T14:12:10.729Z","updatedAt":"2020-04-25T14:12:10.729Z","__v":0},"category":{"_id":"5eba4b7de7e29742c03f38ff","name":"Cмартфони","createdAt":"2020-05-12T07:08:45.463Z","updatedAt":"2020-05-12T07:08:45.463Z","__v":0},"manufacturer":{"_id":"5eb942c29917854d14ec6f04","name":"Apple","createdAt":"2020-05-11T12:19:14.143Z","updatedAt":"2020-05-11T12:19:14.143Z","__v":0},"quantity":200,"createdAt":"2020-05-12T07:13:42.812Z","updatedAt":"2020-05-12T07:13:42.812Z","__v":0},{"sold":0,"_id":"5eba4d19e7e29742c03f3907","name":"Iphone SE 2020","description":"Екран (4.7\", IPS, 1334x750) / Apple A13 Bionic / основна камера: 12 Мп, фронтальна камера: 7 Мп / 64 ГБ вбудованої пам'яті / 3G / LTE / GPS / Nano-SIM / iOS 13","price":15000,"shipping":{"_id":"5ea50ee2e497761658b3403b","name":"Нова Пошта","createdAt":"2020-04-26T04:32:34.228Z","updatedAt":"2020-04-26T04:32:34.228Z","__v":0},"category":{"_id":"5eba4b7de7e29742c03f38ff","name":"Cмартфони","createdAt":"2020-05-12T07:08:45.463Z","updatedAt":"2020-05-12T07:08:45.463Z","__v":0},"manufacturer":{"_id":"5eb942c29917854d14ec6f04","name":"Apple","createdAt":"2020-05-11T12:19:14.143Z","updatedAt":"2020-05-11T12:19:14.143Z","__v":0},"quantity":300,"createdAt":"2020-05-12T07:15:37.876Z","updatedAt":"2020-05-12T07:15:37.876Z","__v":0},{"sold":0,"_id":"5eba4dbfe7e29742c03f3908","name":"Iphone Xr 64 Gb","description":"\nЕкран (6.1\", IPS, 1792x828) / Apple A12 Bionic / основна камера: 12 Мп, фронтальна камера: 7 Мп / RAM 3 ГБ / 64 ГБ вбудованої пам'яті / 3G / LTE / GPS / Nano-SIM / iOS 12","price":18500,"shipping":{"_id":"5ea4453ad661b9569016e017","name":"Justin","createdAt":"2020-04-25T14:12:10.729Z","updatedAt":"2020-04-25T14:12:10.729Z","__v":0},"category":{"_id":"5eba4b7de7e29742c03f38ff","name":"Cмартфони","createdAt":"2020-05-12T07:08:45.463Z","updatedAt":"2020-05-12T07:08:45.463Z","__v":0},"manufacturer":{"_id":"5eb942c29917854d14ec6f04","name":"Apple","createdAt":"2020-05-11T12:19:14.143Z","updatedAt":"2020-05-11T12:19:14.143Z","__v":0},"quantity":300,"createdAt":"2020-05-12T07:18:23.678Z","updatedAt":"2020-05-12T07:18:23.678Z","__v":0},{"sold":0,"_id":"5eba4e50e7e29742c03f3909","name":"Iphone 11 128","description":"Екран (6.1\", IPS (Liquid Retina HD), 1792x828) / Apple A13 Bionic / основна подвійна камера: 12 Мп + 12 Мп, фронтальна камера: 12 Мп / RAM 4 ГБ / 128 ГБ вбудованої пам'яті / 3G / LTE / GPS / ГЛОНАСС / Nano-SIM / iOS 13 / 3046 мА*год","price":25000,"shipping":{"_id":"5ea4453ad661b9569016e017","name":"Justin","createdAt":"2020-04-25T14:12:10.729Z","updatedAt":"2020-04-25T14:12:10.729Z","__v":0},"category":{"_id":"5eba4b7de7e29742c03f38ff","name":"Cмартфони","createdAt":"2020-05-12T07:08:45.463Z","updatedAt":"2020-05-12T07:08:45.463Z","__v":0},"manufacturer":{"_id":"5eb942c29917854d14ec6f04","name":"Apple","createdAt":"2020-05-11T12:19:14.143Z","updatedAt":"2020-05-11T12:19:14.143Z","__v":0},"quantity":400,"createdAt":"2020-05-12T07:20:48.102Z","updatedAt":"2020-05-12T07:20:48.102Z","__v":0},{"sold":0,"_id":"5eba4ef4e7e29742c03f390a","name":"AirPods 2","description":"Збільшений час роботи в режимі телефонної розмови. Активація Siri голосом. AirPods — унікальні бездротові навушники. Вони пасуватимуть до всіх ваших пристроїв. Дістаньте їх із футляра, і відразу можете користуватися. Просто надіньте їх, і вони миттєво встановлять з'єднання, а, отже, ви зможете відразу зануритися в насичений якісний звук. Немов за помахом чарівної палички.","price":5000,"shipping":{"_id":"5ea4453ad661b9569016e017","name":"Justin","createdAt":"2020-04-25T14:12:10.729Z","updatedAt":"2020-04-25T14:12:10.729Z","__v":0},"category":{"_id":"5eba4b99e7e29742c03f3902","name":"Безпровідні навушники","createdAt":"2020-05-12T07:09:13.477Z","updatedAt":"2020-05-12T07:09:13.477Z","__v":0},"manufacturer":{"_id":"5eb942c29917854d14ec6f04","name":"Apple","createdAt":"2020-05-11T12:19:14.143Z","updatedAt":"2020-05-11T12:19:14.143Z","__v":0},"quantity":1000,"createdAt":"2020-05-12T07:23:32.641Z","updatedAt":"2020-05-12T07:23:32.641Z","__v":0}],
+const productsInitialState = {
+    productsList: [],
+    filteredProductList: [],
+    filters: {
+        category: [],
+        manufacturer: [],
+        price: []
+    },
+
+    minPrice: 0,
+    maxPrice: 10000000000,
+    limit: 6,
+    skip: 0,
+    size: 0,
+
+    categoriesLoading: false,
+    categoriesError: false,
+    categoriesErrorMsg: '',
+    categoriesList: [],
+
+
+    manufacturesLoading: false,
+    manufacturesError: false,
+    manufacturesErrorMsg: '',
+    manufacturesList: [],
+
+
+    checkBoxChecked: [],
     isLoading: false,
-    isError:false,
-    errorMsg :''
+    isError: false,
+    errorMsg: ''
 
 }
-const productsReducer = (state =productsInitialState,action) =>{
+const productsReducer = (state = productsInitialState, action) => {
 
     switch (action.type) {
-        case LOAD_PRODUCTS :{
-            return {...state, productsList:action.products}
+        case LOAD_PRODUCTS : {
+            return {...state, productsList: action.products}
         }
-        case PRODUCTS_IS_LOADING:{
+        case PRODUCTS_IS_LOADING: {
 
-            return {...state, isLoading:action.isLoading}
-
-        }
-        case PRODUCTS_HAS_ERROR:{
-
-            return {...state,isError: action.isError, errorMsg: action.errorMsg}
+            return {...state, isLoading: action.isLoading}
 
         }
-        default :{
+        case PRODUCTS_HAS_ERROR: {
+
+            return {...state, isError: action.isError, errorMsg: action.errorMsg}
+
+        }
+        case HANDLE_TOGGLE_FILTER : {
+
+            const currentItemId = state.checkBoxChecked.indexOf(action.filter)
+
+            const newCheckedItemId = [...state.checkBoxChecked]
+            // якщо вибрана категорія не є в стейті то добавляє якщо є то забирає
+            if (currentItemId === -1) {
+                newCheckedItemId.push(action.filter)
+
+            } else {
+                newCheckedItemId.splice(currentItemId, 1)
+            }
+            // console.log(newCheckedItemId)
+            // setChecked(newCheckedCategoryId)
+            // filters =>
+            // handleFilters(filters,'category')
+            const newFilters = {...state.filters}
+
+            newFilters[action.filterBy] = newCheckedItemId
+
+            //laodilteredResult()
+            //     loadFilteredProductsFromDB(state.skip,state.limit,newFilters)
+
+            return {...state, checkBoxChecked: newCheckedItemId, filters: newFilters}
+            // handleFiltersCategory(newCheckedCategoryId)
+
+            // debugger
+            // поветрає перший індекс чекнутої категорії або повертє -1 якщо нічого не вибрано
+
+
+        }
+        case LOAD_FILTERED_PRODUCTS : {
+            return {...state, filteredProductList: action.products}
+        }
+
+        case LOAD_CATEGORIES: {
+            return {...state, categoriesList: action.categories}
+        }
+        case CATEGORIES_IS_LOADING: {
+
+            return {...state, categoriesLoading: action.isLoading}
+
+        }
+        case CATEGORIES_HAS_ERROR: {
+
+            return {...state, categoriesError: action.isError, categoriesErrorMsg: action.errorMsg}
+
+        }
+        case LOAD_MANUFACTURES: {
+            return {...state, manufacturesList: action.manufactures}
+        }
+        case MANUFACTURES_IS_LOADING: {
+
+            return {...state, manufacturesLoading: action.isLoading}
+
+        }
+        case MANUFACTURES_HAS_ERROR: {
+
+            return {...state, manufacturesError: action.isError, manufacturesErrorMsg: action.errorMsg}
+
+        }
+        default : {
             return state
         }
 
     }
 }
-export const loadProducts =(products)=>({type:LOAD_PRODUCTS,products})
-export const productsIsLoading = (bool) =>({type:PRODUCTS_IS_LOADING,isLoading : bool})
-export const productsHasError = (bool,errorMsg) =>({type:PRODUCTS_HAS_ERROR,isError : bool,errorMsg})
+export const loadProducts = (products) => ({type: LOAD_PRODUCTS, products})
+export const loadFilteredProducts = (products) => ({type: LOAD_FILTERED_PRODUCTS, products})
+export const loadCategories = (categories) => ({type: LOAD_CATEGORIES, categories})
+export const loadManufactures = (manufactures) => ({type: LOAD_MANUFACTURES, manufactures})
+
+export const productsIsLoading = (bool) => ({type: PRODUCTS_IS_LOADING, isLoading: bool})
+export const productsHasError = (bool, errorMsg) => ({type: PRODUCTS_HAS_ERROR, isError: bool, errorMsg})
+
+export const categoriesIsLoading = (bool) => ({type: CATEGORIES_IS_LOADING, isLoading: bool})
+export const categoriesHasError = (bool, errorMsg) => ({type: CATEGORIES_HAS_ERROR, isError: bool, errorMsg})
+
+export const manufacturesIsLoading = (bool) => ({type: MANUFACTURES_IS_LOADING, isLoading: bool})
+export const manufacturesHasError = (bool, errorMsg) => ({type: MANUFACTURES_HAS_ERROR, isError: bool, errorMsg})
+
+
+export const handleToggleFilter = (filter, filterBy) => ({type: HANDLE_TOGGLE_FILTER, filter, filterBy})
 
 
 export default productsReducer

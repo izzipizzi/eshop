@@ -1,0 +1,39 @@
+.shopContent{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.leftCategories{
+
+}
+.leftCategories ul li{
+
+
+}
+.contentRight{
+    display: flex;
+    flex-basis: 80%;
+
+}
+
+.contentLeft{
+    display: flex;
+    flex-basis: 20%;
+    margin: 20px auto;
+    flex-direction: column;
+    /*align-items: center;*/
+    justify-content: start;
+    /*padding: 40px auto;*/
+    padding-left: 20px;
+
+
+}
+.contentLeftItem ul li{
+
+    display: flex;
+    margin: 20px 10px;
+    flex-direction: column;
+    align-items:center;
+    width: 100px;
+
+}

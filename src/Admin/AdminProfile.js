@@ -10,13 +10,22 @@ const AdminProfile =(props) =>{
         return (
             <div className='profile-left-block'>
 
-                <h1 className='block-header'>Useer linkes</h1>
+                <h1 className='block-header'>Odmen linkes</h1>
                 <ul >
-                    <li >
-                        <Link className ='link'   to='/cart'>Corsina</Link>
+                    <li>
+                        <Link  className ='link' to ='/admin/сreate/category'>
+                            Створити категорію
+                        </Link>
                     </li>
-                    <li >
-                        <Link  className ='link' to='/profile/update'>Update profile</Link>
+                    <li>
+                        <Link  className ='link' to ='/admin/сreate/manufacturer'>
+                            Добавити виробника
+                        </Link>
+                    </li>
+                    <li>
+                        <Link  className ='link' to='/admin/сreate/product'>
+                            Створити продукт
+                        </Link>
                     </li>
                 </ul>
             </div>

@@ -15,7 +15,7 @@ const CheckBox = (props) => {
 
 }
     return (
-        <div>
+        <div className='contentLeftItem'>
             {props.items.map((item,index) => {
                 return (
                     <li className='list-unstyled' key={index}>
@@ -23,11 +23,15 @@ const CheckBox = (props) => {
                             // onChange={handleToggleFilter(item._id)}
                             onChange={()=>{
                                 props.handleToggle(item._id,props.filterBy)
+                                setTimeout(()=>{
+                                    props.loadFilteredProducts(props.skip,props.limit,props.filters)
+                                },0)
                              //   debugger
-                                props.loadFilteredProducts(props.skip,props.limit,props.filters)}
+                            }
                             }
                             //    onChange={(e)=>props.handleToggleFilter(item._id)}
                                value={props.checkBoxChecked.indexOf(item._id === -1)} type='checkbox'
+                                // checked={!props.checkBoxChecked.lastIndexOf(item._id)}
                                className='form-check-input'/>
                         <label className='form-check-label'> {` ${item.name}`}</label>
                     </li>

@@ -10,10 +10,10 @@ const USER_HAS_ERROR = 'USER_HAS_ERROR';
 const userState ={
     currentUser:{
 
-            "_id": "5e882e00989b555a2cba253e",
-            "email": "kircheiandri@gmail.com",
-            "name": "Andrea",
-            "role": 0
+            // "_id": "5e882e00989b555a2cba253e",
+            // "email": "kircheiandri@gmail.com",
+            // "name": "Andrea",
+            // "role": 0
 
     },
     isLoading: false,

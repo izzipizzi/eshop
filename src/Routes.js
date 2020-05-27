@@ -13,6 +13,8 @@ import PrivateRoute from "./AuthorizedAccess/PrivateRoute";
 import AdminProfileContainer from "./Admin/ProfileContainer";
 import PrivateAdminRoute from "./AuthorizedAccess/PrivateAdminRoute";
 import ShopContainer from "./Shop/ShopContainer";
+import AddCategoryContainer from "./Admin/AdminPages/AddCategory";
+import AddManufacturerContainer from "./Admin/AdminPages/AddManufacturer";
 // import SignIn from "./SignIn/SignIn";
 // import ProfileContainer from "./Profile/ProfileContainer";
 // import PrivateRoute from "./AuthorizedAccess/PrivateRoute";
@@ -34,6 +36,8 @@ export const Routes =(props)=>{
                 <Route path={'/signin'}  exact component={SignInContainer}/>
                 <PrivateRoute path ='/user/profile' exact component={ProfileContainer}/>
                 <PrivateAdminRoute path ='/admin/profile' exact component={AdminProfileContainer}/>
+                <PrivateAdminRoute path ='/admin/сreate/category' exact component={AddCategoryContainer}/>
+                <PrivateAdminRoute path ='/admin/сreate/manufacturer' exact component={AddManufacturerContainer}/>
                 {/*{props.userToken.token ? <PrivateRoute path ='/user/profile' exact component={ProfileContainer}/> : <Redirect to={'/signin'}/>}*/}
 
             </Switch>

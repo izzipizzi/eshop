@@ -17,11 +17,6 @@ const Shop = (props) => {
     }, [])
     // debugger
 
-    const handleToggleFilter = (filter) => {
-        console.log(filter)
-    }
-    let loadProductCards = props.products.productsList.map(product => (
-        <ProductCard key={product._id} product={product}/>))
     let loadCategoriesCheckBox = () => {
         // debugger
         return (
@@ -45,14 +40,22 @@ const Shop = (props) => {
                 checkBoxChecked={props.products.checkBoxChecked}
                 items={props.products.manufacturesList}
                 handleToggle={props.handleToggleFilter}
+                loadFilteredProducts={props.loadFilteredProducts}
                 filterBy='manufacturer'
+                skip = {props.products.skip}
+                limit ={ props.products.limit}
+                filters ={props.products.filters}
             />)
     }
-    return (
-        <Container className={css.Home}>
 
-            <div className='container'>
-                <div className={css.rightContent}>
+    let loadProductCards = props.products.filteredProductList.map(product=>(<ProductCard key ={product._id} product={product}/>))
+
+    return (
+        <Container className={css.shop}>
+
+            <div className={css.shopContent}>
+
+                <div className={css.contentLeft}>
                     {props.products.categoriesLoading ? (<p>Loading....</p>) :
                         (props.products.categoriesError ? (<p>{props.products.categoriesErrorMsg}</p>) : loadCategoriesCheckBox())
                     }
@@ -60,6 +63,16 @@ const Shop = (props) => {
                         (props.products.manufacturesError ? (<p>{props.products.manufacturesErrorMsg}</p>) : loadManufacturesCheckBox())
                     }
                 </div>
+                <div className={css.contentRight}>
+
+                    <div className='card-holder'>
+                        {props.products.isLoading ? (<p>Loading....</p>):
+                            (props.products.isError ? (<p>{props.products.errorMsg}</p>): loadProductCards)
+                        }
+                    </div>
+
+                </div>
+
 
 
             </div>

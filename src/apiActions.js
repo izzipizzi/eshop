@@ -7,13 +7,22 @@ import {
 import {API} from "./config";
 import {
     categoriesHasError,
-    categoriesIsLoading, createCategory, createManufacturer,
+    categoriesIsLoading, categoryByID,
+    createCategory,
+    createDelivery,
+    createManufacturer,
+    createProduct, deliveryByID,
+    deliveryHasError,
+    deliveryIsLoading,
     loadCategories,
+    loadDelivery,
     loadFilteredProducts,
     loadManufactures,
-    loadProducts, manufacturesHasError, manufacturesIsLoading,
+    loadProducts, manufacturerByID,
+    manufacturesHasError,
+    manufacturesIsLoading, productByID,
     productsHasError,
-    productsIsLoading, removeCategory
+    productsIsLoading, productsSize,
 } from "./reducers/product";
 
 
@@ -51,9 +60,9 @@ export const loadProductsFromDB = (sortBy = 'sold', limit = 20) => {
     })
 
 }
-export const loadFilteredProductsFromDB = (skip, limit ,filters) => {
+export const loadFilteredProductsFromDB = (page, limit ,filters) => {
     return ((dispatch) => {
-        const data ={limit,skip,filters}
+        const data ={limit,page,filters}
         dispatch(productsIsLoading(true))
         fetch(`${API}/products/by/search`, {
             method: 'POST', mode: 'cors',
@@ -77,7 +86,7 @@ export const loadFilteredProductsFromDB = (skip, limit ,filters) => {
                     dispatch(productsHasError(true,products.msg))
                 }else {
                     dispatch(loadFilteredProducts(products.data))
-
+                    dispatch(productsSize(products.size,products.totalSize))
                 }
             })
             .catch(error => {
@@ -156,52 +165,41 @@ export const loadManufacturesFromDB = () => {
     })
 
 }
-
-export const signUpUser = (user) => {
+export const loadDeliveryFromDB = () => {
     return ((dispatch) => {
-        // debugger
-
-        dispatch(userIsLoading(true))
-        fetch(`${API}/signup`, {
-            method: 'POST', mode: 'cors',
+        dispatch(deliveryIsLoading(true))
+        fetch(`${API}/deliveries`, {
+            method: 'GET', mode: 'cors',
             headers: {
                 "access-control-allow-origin": "*",
-                "Content-type": "application/json; charset=UTF-8",
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(user)
+                "Content-type": "application/json; charset=UTF-8"
+            }
         })
             .then(response => {
-
                 if (!response.ok) {
                     console.log(response.statusText)
                 }
+                dispatch(deliveryIsLoading(false))
                 return response
             })
             .then(response => response.json())
-            .then(data => {
-                dispatch(userIsLoading(false))
-
-                if (data.error) {
-                        dispatch(userHasError(true, data.error))
-                    } else {
-                        dispatch(userHasError(false, ''))
-                        dispatch(userSignUp(data.user))
-
-
-                    }
+            .then(deliveries => {
+                if (deliveries.msg){
+                    dispatch(deliveryHasError(true,deliveries.msg))
+                }else {
+                    dispatch(loadDelivery(deliveries))
 
                 }
-            )
-
+            })
             .catch(error => {
-                dispatch(userHasError(true),error)
+                dispatch(deliveryHasError(true,error))
             })
 
 
     })
 
 }
+
 
 export const addCategory = (category) => {
     return ((dispatch) => {
@@ -238,6 +236,54 @@ export const addCategory = (category) => {
                         dispatch(categoriesHasError(false, ''))
                         dispatch(createCategory(data.data))
                         }
+
+                }
+            )
+
+            .catch(error => {
+                dispatch(categoriesHasError(true),error)
+            })
+
+
+    })
+
+}
+export const updateCategory = (id,name) => {
+    return ((dispatch) => {
+        // debugger
+
+        dispatch(categoriesIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(categoriesHasError(true,'У вас немає прав')) :
+        fetch(`${API}/category/${id}/${userId}`, {
+            method: 'PUT', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+                'Accept': 'application/json',
+                'Authorization' : `Bearer ${token}`
+            },
+            body: JSON.stringify({name})
+        })
+            .then(response => {
+
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                return response
+            })
+            .then(response => response.json())
+            .then(data => {
+                dispatch(categoriesIsLoading(false))
+
+                if (data.error) {
+                        dispatch(categoriesHasError(true, data.error))
+                    } else {
+                        dispatch(categoriesHasError(false, ''))
+                        // dispatch(createCategory(data.data))
+                        dispatch(loadCategoriesFromDB())
+                }
 
                 }
             )
@@ -300,6 +346,41 @@ export const deleteCategory = (categoryId) => {
     })
 
 }
+export const loadCategoryById = (id) => {
+    return ((dispatch) => {
+        // dispatch(categoriesIsLoading(true))
+        fetch(`${API}/category/${id}`, {
+            method: 'GET', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                // dispatch(categoriesIsLoading(false))
+                return response
+            })
+            .then(response => response.json())
+            .then(categories => {
+                if (categories.msg){
+                    dispatch(categoriesHasError(true,categories.msg))
+                }else {
+                    dispatch(categoryByID(categories))
+
+                }
+            })
+            .catch(error => {
+                dispatch(categoriesHasError(true,error))
+            })
+
+
+    })
+
+}
+
 export const addManufacturer = (manufacturer) => {
     return ((dispatch) => {
         // debugger
@@ -334,6 +415,54 @@ export const addManufacturer = (manufacturer) => {
                         } else {
                             dispatch(manufacturesHasError(false, ''))
                             dispatch(createManufacturer(data.data))
+                        }
+
+                    }
+                )
+
+                .catch(error => {
+                    dispatch(manufacturesHasError(true),error)
+                })
+
+
+    })
+
+}
+export const updateManufacturer = (id,name) => {
+    return ((dispatch) => {
+        // debugger
+
+        dispatch(manufacturesIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(manufacturesHasError(true,'У вас немає прав')) :
+            fetch(`${API}/manufacturer/${id}/${userId}`, {
+                method: 'PUT', mode: 'cors',
+                headers: {
+                    "access-control-allow-origin": "*",
+                    "Content-type": "application/json; charset=UTF-8",
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                body: JSON.stringify({name})
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                        dispatch(manufacturesIsLoading(false))
+
+                        if (data.error) {
+                            dispatch(manufacturesHasError(true, data.error))
+                        } else {
+                            dispatch(manufacturesHasError(false, ''))
+                            // dispatch(createCategory(data.data))
+                            dispatch(loadManufacturesFromDB())
                         }
 
                     }
@@ -391,6 +520,393 @@ export const deleteManufacturer = (manufacturerId) => {
     })
 
 }
+export const loadManufacturerById = (id) => {
+    return ((dispatch) => {
+        // dispatch(categoriesIsLoading(true))
+        fetch(`${API}/manufacturer/${id}`, {
+            method: 'GET', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                // dispatch(categoriesIsLoading(false))
+                return response
+            })
+            .then(response => response.json())
+            .then(manufacturer => {
+                if (manufacturer.msg){
+                    dispatch(manufacturesHasError(true,manufacturer.msg))
+                }else {
+                    dispatch(manufacturerByID(manufacturer))
+
+                }
+            })
+            .catch(error => {
+                dispatch(manufacturesHasError(true,error))
+            })
+
+
+    })
+
+}
+
+
+export const addDelivery = (delivery) => {
+    return ((dispatch) => {
+        // debugger
+
+        dispatch(deliveryIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(deliveryHasError(true,'У вас немає прав')) :
+            fetch(`${API}/delivery/create/${userId}`, {
+                method: 'POST', mode: 'cors',
+                headers: {
+                    "access-control-allow-origin": "*",
+                    "Content-type": "application/json; charset=UTF-8",
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                body: JSON.stringify(delivery)
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                        dispatch(deliveryIsLoading(false))
+
+                        if (data.error) {
+                            dispatch(deliveryHasError(true, data.error))
+                        } else {
+                            dispatch(deliveryHasError(false, ''))
+                            dispatch(createDelivery(data.data))
+                        }
+
+                    }
+                )
+
+                .catch(error => {
+                    dispatch(deliveryHasError(true),error)
+                })
+
+
+    })
+
+}
+export const updateDelivery = (id,name) => {
+    return ((dispatch) => {
+        // debugger
+
+        dispatch(deliveryIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(deliveryHasError(true,'У вас немає прав')) :
+            fetch(`${API}/delivery/${id}/${userId}`, {
+                method: 'PUT', mode: 'cors',
+                headers: {
+                    "access-control-allow-origin": "*",
+                    "Content-type": "application/json; charset=UTF-8",
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                body: JSON.stringify({name})
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                        dispatch(deliveryIsLoading(false))
+
+                        if (data.error) {
+                            dispatch(deliveryHasError(true, data.error))
+                        } else {
+                            dispatch(deliveryHasError(false, ''))
+                            // dispatch(createCategory(data.data))
+                            dispatch(loadDeliveryFromDB())
+                        }
+
+                    }
+                )
+
+                .catch(error => {
+                    dispatch(deliveryHasError(true),error)
+                })
+
+
+    })
+
+}
+export const deleteDelivery = (deliveryId) => {
+    return ((dispatch) => {
+        dispatch(deliveryIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(deliveryHasError(true,'У вас немає прав')) :
+            fetch(`${API}/delivery/${deliveryId}/${userId}`, {
+                method: 'DELETE', mode: 'cors',
+                headers: {
+                    "access-control-allow-origin": "*",
+                    "Content-type": "application/json; charset=UTF-8",
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                        dispatch(deliveryIsLoading(false))
+
+                        if (data.error) {
+                            dispatch(deliveryHasError(true, data.error))
+                        } else {
+                            dispatch(deliveryHasError(false, ''))
+                            dispatch(loadDeliveryFromDB())
+                        }
+
+                    }
+                )
+
+                .catch(error => {
+                    dispatch(deliveryHasError(true),error)
+                })
+
+
+    })
+
+}
+export const loadDeliveryById = (id) => {
+    return ((dispatch) => {
+        // dispatch(categoriesIsLoading(true))
+        fetch(`${API}/delivery/${id}`, {
+            method: 'GET', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                // dispatch(categoriesIsLoading(false))
+                return response
+            })
+            .then(response => response.json())
+            .then(delivery => {
+                if (delivery.msg){
+                    dispatch(deliveryHasError(true,delivery.msg))
+                }else {
+                    dispatch(deliveryByID(delivery))
+
+                }
+            })
+            .catch(error => {
+                dispatch(deliveryHasError(true,error))
+            })
+
+
+    })
+
+}
+
+export const addProduct = (product) => {
+    return ((dispatch) => {
+        // debugger
+
+        dispatch(productsIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(productsHasError(true,'У вас немає прав')) :
+            fetch(`${API}/product/create/${userId}`, {
+                method: 'POST', mode: 'cors',
+                headers: {
+                    "access-control-allow-origin": "*",
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                body: product
+                // body: JSON.stringify(product)
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                        dispatch(productsIsLoading(false))
+
+                        if (data.error) {
+                            dispatch(productsHasError(true, data.error))
+                        } else {
+                            dispatch(productsHasError(false, ''))
+                            dispatch(createProduct(data.data))
+                            // dispatch(loadProductsFromDB())
+                        }
+
+                    }
+                )
+
+                .catch(error => {
+                    dispatch(productsHasError(true),error)
+                })
+
+
+    })
+
+}
+export const updateProduct = (id,product) => {
+    return ((dispatch) => {
+        // debugger
+
+        dispatch(productsIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(productsHasError(true,'У вас немає прав')) :
+            fetch(`${API}/product/${id}/${userId}`, {
+                method: 'PUT', mode: 'cors',
+                headers: {
+                    "access-control-allow-origin": "*",
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+                body: product
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                        dispatch(productsIsLoading(false))
+
+                        if (data.error) {
+                            dispatch(productsHasError(true, data.error))
+                        } else {
+                            dispatch(productsHasError(false, ''))
+                            // dispatch(createCategory(data.data))
+                            dispatch(loadProductsFromDB())
+                        }
+
+                    }
+                )
+
+                .catch(error => {
+                    dispatch(productsHasError(true),error)
+                })
+
+
+    })
+
+}
+export const deleteProduct = (productId) => {
+    return ((dispatch) => {
+        dispatch(productsIsLoading(true))
+        const userId =localStorage.getItem('userId')
+        const token =localStorage.getItem('jwt')
+        !userId || !token ? dispatch(productsHasError(true,'У вас немає прав')) :
+            fetch(`${API}/product/${productId}/${userId}`, {
+                method: 'DELETE', mode: 'cors',
+                headers: {
+                    "access-control-allow-origin": "*",
+                    "Content-type": "application/json; charset=UTF-8",
+                    'Accept': 'application/json',
+                    'Authorization' : `Bearer ${token}`
+                },
+            })
+                .then(response => {
+
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                    return response
+                })
+                .then(response => response.json())
+                .then(data => {
+                        dispatch(productsHasError(false))
+
+                        if (data.error) {
+                            dispatch(productsHasError(true, data.error))
+                        } else {
+                            dispatch(productsHasError(false, ''))
+                            dispatch(loadProductsFromDB('createdAt',100))
+                        }
+
+                    }
+                )
+
+                .catch(error => {
+                    dispatch(productsHasError(true),error)
+                })
+
+
+    })
+
+}
+export const loadProductById = (id) => {
+    return ((dispatch) => {
+        // dispatch(categoriesIsLoading(true))
+        fetch(`${API}/product/${id}`, {
+            method: 'GET', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                // dispatch(categoriesIsLoading(false))
+                return response
+            })
+            .then(response => response.json())
+            .then(product => {
+                if (product.msg){
+                    dispatch(productsHasError(true,product.msg))
+                }else {
+                    dispatch(productByID(product))
+
+                }
+            })
+            .catch(error => {
+                dispatch(productsHasError(true,error))
+            })
+
+
+    })
+
+}
+
+
+
+
 export const signInUser = (user) => {
 
     return (dispatch) => {
@@ -468,26 +984,49 @@ export const getUserAuth = (id,jwt) => {
 
     }
 }
-//
-// export const signOutUser = () =>{
-//     return(dispatch=>{
-//
-//         //     next()
-//         fetch(`${API}/signout`,{
-//              method : 'GET'
-//             })
-//             .then(response =>{
-//                     // console.log('signout',res)
-//                 dispatch(userHasSuccess(true,response.msg))
-//                 dispatch(userRemoveToken())
-//                 dispatch(userHasToken())
-//
-//             })
-//             .catch(error=>{
-//                     // console.log('signout',)
-//                 dispatch(userHasError(true,error))
-//             })
-//
-//     })
-//
-// }
+export const signUpUser = (user) => {
+    return ((dispatch) => {
+        // debugger
+
+        dispatch(userIsLoading(true))
+        fetch(`${API}/signup`, {
+            method: 'POST', mode: 'cors',
+            headers: {
+                "access-control-allow-origin": "*",
+                "Content-type": "application/json; charset=UTF-8",
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(response => {
+
+                if (!response.ok) {
+                    console.log(response.statusText)
+                }
+                return response
+            })
+            .then(response => response.json())
+            .then(data => {
+                    dispatch(userIsLoading(false))
+
+                    if (data.error) {
+                        dispatch(userHasError(true, data.error))
+                    } else {
+                        dispatch(userHasError(false, ''))
+                        dispatch(userSignUp(data.user))
+
+
+                    }
+
+                }
+            )
+
+            .catch(error => {
+                dispatch(userHasError(true),error)
+            })
+
+
+    })
+
+}
+

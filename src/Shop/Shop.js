@@ -3,6 +3,7 @@ import ProductCard from "../components/ProductCard/ProductCard";
 import Container from "../Container";
 import css from './Shop.module.css'
 import CheckBox from "../components/CheckBox";
+import {loadFilteredProducts} from "../reducers/product";
 
 const Shop = (props) => {
 
@@ -12,11 +13,10 @@ const Shop = (props) => {
         // loadProducts()
         props.loadCategories()
         props.loadManufactures()
-        props.loadFilteredProducts(props.products.skip,props.products.limit,props.products.filters)
+        props.loadFilteredProducts(props.products.selectedPage,props.products.limit,props.products.filters)
 
     }, [])
     // debugger
-
     let loadCategoriesCheckBox = () => {
         // debugger
         return (
@@ -26,7 +26,7 @@ const Shop = (props) => {
                 handleToggle={props.handleToggleFilter}
                 loadFilteredProducts={props.loadFilteredProducts}
                 filterBy='category'
-                skip = {props.products.skip}
+                page = {props.products.selectedPage}
                 limit ={ props.products.limit}
                 filters ={props.products.filters}
 
@@ -42,7 +42,7 @@ const Shop = (props) => {
                 handleToggle={props.handleToggleFilter}
                 loadFilteredProducts={props.loadFilteredProducts}
                 filterBy='manufacturer'
-                skip = {props.products.skip}
+                page = {props.products.selectedPage}
                 limit ={ props.products.limit}
                 filters ={props.products.filters}
             />)
@@ -50,15 +50,29 @@ const Shop = (props) => {
 
     let loadProductCards = props.products.filteredProductList.map(product=>(<ProductCard key ={product._id} product={product}/>))
 
+    let pagesCount =Math.ceil(props.products.totalProductsSize/props.products.size)
+
+    let pages= []
+    for (let i = 1; i<=pagesCount; i++){
+        pages.push(i)
+    }
+    useEffect(()=>{
+        props.loadFilteredProducts(props.products.selectedPage,props.products.limit,props.products.filters)
+
+    },[props.products.selectedPage])
     return (
         <Container className={css.shop}>
 
             <div className={css.shopContent}>
 
                 <div className={css.contentLeft}>
+                    <h4>Категорії</h4>
+
                     {props.products.categoriesLoading ? (<p>Loading....</p>) :
                         (props.products.categoriesError ? (<p>{props.products.categoriesErrorMsg}</p>) : loadCategoriesCheckBox())
                     }
+
+                    <h4>Виробники</h4>
                     {props.products.manufacturesLoading ? (<p>Loading....</p>) :
                         (props.products.manufacturesError ? (<p>{props.products.manufacturesErrorMsg}</p>) : loadManufacturesCheckBox())
                     }
@@ -71,11 +85,25 @@ const Shop = (props) => {
                         }
                     </div>
 
+
+
                 </div>
 
 
 
+
             </div>
+
+            <div className={css.paginationPages}>{pages.map((page) => {
+                return (
+                    <span className={(props.products.selectedPage) === page && css.active}
+                          onClick={() => {
+                              props.setCurrentPage(page)
+
+                          }}
+                    >{page}</span>
+                )
+            })}</div>
 
 
         </Container>

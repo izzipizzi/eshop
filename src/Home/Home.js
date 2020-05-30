@@ -9,7 +9,7 @@ const Home = ({products,loadProducts}) => {
     // debugger
     useEffect(()=>{
         //включити коли появиться інтернет
-        loadProducts()
+        loadProducts('createdAt',9)
 
     },[])
     let loadProductCards = products.productsList.map(product=>(<ProductCard key ={product._id} product={product}/>))
@@ -18,7 +18,7 @@ const Home = ({products,loadProducts}) => {
 
             <div className='container'>
                 <div className="content-header">
-                    <h2>Топ продаж</h2>
+                    <h2>Останні поступлення</h2>
                 </div>
                 <div className='card-holder'>
                     {products.isLoading ? (<p>Loading....</p>):

@@ -24,7 +24,7 @@ const CheckBox = (props) => {
                             onChange={()=>{
                                 props.handleToggle(item._id,props.filterBy)
                                 setTimeout(()=>{
-                                    props.loadFilteredProducts(props.skip,props.limit,props.filters)
+                                    props.loadFilteredProducts(props.page,props.limit,props.filters)
                                 },0)
                              //   debugger
                             }

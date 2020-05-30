@@ -1,6 +1,6 @@
 import Shop from "./Shop";
 import {connect} from "react-redux";
-import {handleFilters, handleToggleFilter, loadProducts} from "../reducers/product";
+import {handleFilters, handleToggleFilter, loadProducts, setCurrentPage} from "../reducers/product";
 import {
     loadCategoriesFromDB,
     loadFilteredProductsFromDB,
@@ -18,10 +18,11 @@ const mapStateToProps =(state)=>{
 const mapDispatchToProps = (dispatch)=>{
     return{
         loadProducts: (sortBy,limit)=>dispatch(loadProductsFromDB(sortBy,limit)),
-        loadFilteredProducts: (skip,limit,filters)=>dispatch(loadFilteredProductsFromDB(skip,limit,filters)),
+        loadFilteredProducts: (page,limit,filters)=>dispatch(loadFilteredProductsFromDB(page,limit,filters)),
         loadCategories: ()=>dispatch(loadCategoriesFromDB()),
         loadManufactures: ()=>dispatch(loadManufacturesFromDB()),
         handleToggleFilter : (filter,filterBy)=>dispatch(handleToggleFilter(filter,filterBy)),
+        setCurrentPage :(page)=>dispatch(setCurrentPage(page))
     }
 }
 

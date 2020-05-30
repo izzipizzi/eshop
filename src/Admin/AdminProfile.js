@@ -13,20 +13,11 @@ const AdminProfile =(props) =>{
                 <h1 className='block-header'>Odmen linkes</h1>
                 <ul >
                     <li>
-                        <Link  className ='link' to ='/admin/сreate/category'>
-                            Створити категорію
+                        <Link  className ='link' to ='/admin/product'>
+                            Адміністрування товарів виробників, категорій
                         </Link>
                     </li>
-                    <li>
-                        <Link  className ='link' to ='/admin/сreate/manufacturer'>
-                            Добавити виробника
-                        </Link>
-                    </li>
-                    <li>
-                        <Link  className ='link' to='/admin/сreate/product'>
-                            Створити продукт
-                        </Link>
-                    </li>
+
                 </ul>
             </div>
         )

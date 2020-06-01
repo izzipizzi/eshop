@@ -1,4 +1,5 @@
 const Category = require('../models/category')
+const Delivery = require('../models/delivery')
 const {errorHandler} = require('../helpers/dbErrorHandler')
 exports.create = (req,res)=>{
     const category = new Category(req.body)
@@ -62,4 +63,26 @@ exports.list=(req,res)=>{
         res.json(data)
     })
 
+}
+
+exports.CategoriesandDeliveries =(req,res)=>{
+    Category.find().exec((err,categories)=>{
+        if (err) {
+            return res.status(400).json({
+                err : errorHandler(err)
+            })
+        }
+        // let delivery;
+        Delivery.find().exec((err,deliveries)=>{
+            if (err) {
+                return res.status(400).json({
+                    err : errorHandler(err)
+                })
+            }
+            res.json({deliveries,categories})
+             
+        })
+    
+      
+    })
 }

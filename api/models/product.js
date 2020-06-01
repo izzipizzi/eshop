@@ -23,6 +23,11 @@ const productSchema = new mongoose.Schema({
         ref: 'Category',
         required : true
     },
+    manufacturer:{
+        type:ObjectId,
+        ref : "Manufacturer",
+        required : true
+    },
     quantity :{
         type : Number
     },
@@ -35,8 +40,9 @@ const productSchema = new mongoose.Schema({
         contentType : String
     },
     shipping:{
-        required : false,
-        type : Boolean
+        type :ObjectId,
+        ref: 'Delivery',
+        required : true
     }
   
     

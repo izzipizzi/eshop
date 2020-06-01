@@ -1,0 +1,21 @@
+.form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.formItem{
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.formItem label{
+    margin: 10px;
+}
+.addItemBlock{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}

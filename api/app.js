@@ -13,9 +13,13 @@ const authRoutes = require('./routes/auth')
 const userRoutes = require('./routes/user')
 const categoryRoutes = require('./routes/category')
 const productRoutes = require('./routes/product')
+const deliveryRoutes = require('./routes/delivery')
+const manufacturerRoutes = require('./routes/manufacturer')
 
 
 const app = express()
+app.use(cors())
+
 
 //підключаю конфіг
 require("dotenv").config()
@@ -34,12 +38,13 @@ app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(expressValidator())
-app.use(cors())
 //-------МАРШРУТИ------------//Route Middleware
 app.use('/api',authRoutes)
 app.use('/api',userRoutes)
 app.use('/api',categoryRoutes)
 app.use('/api',productRoutes)
+app.use('/api',deliveryRoutes)
+app.use('/api',manufacturerRoutes)
 
 //---------------------------
 
